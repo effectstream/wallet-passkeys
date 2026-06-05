@@ -6,78 +6,93 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Terminal aesthetic — pure black background, neon-green primary, mono
+   everywhere, sharp corners. The intent is to make wallet-passkeys visually
+   read as "low-level secure auth provider / iframe root of trust" — quite
+   distinct from whatever colorful consumer dApp embeds it.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0.008 326);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.008 326);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.008 326);
-  --primary: oklch(0.5 0.134 242.749);
-  --primary-foreground: oklch(0.977 0.013 236.62);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.96 0.003 325.6);
-  --muted-foreground: oklch(0.542 0.034 322.5);
-  --accent: oklch(0.96 0.003 325.6);
-  --accent-foreground: oklch(0.212 0.019 322.12);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0.005 325.62);
-  --input: oklch(0.922 0.005 325.62);
-  --ring: oklch(0.711 0.019 323.02);
-  --chart-1: oklch(0.828 0.111 230.318);
-  --chart-2: oklch(0.685 0.169 237.323);
-  --chart-3: oklch(0.588 0.158 241.966);
-  --chart-4: oklch(0.5 0.134 242.749);
-  --chart-5: oklch(0.443 0.11 240.79);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0.008 326);
-  --sidebar-primary: oklch(0.588 0.158 241.966);
-  --sidebar-primary-foreground: oklch(0.977 0.013 236.62);
-  --sidebar-accent: oklch(0.96 0.003 325.6);
-  --sidebar-accent-foreground: oklch(0.212 0.019 322.12);
-  --sidebar-border: oklch(0.922 0.005 325.62);
-  --sidebar-ring: oklch(0.711 0.019 323.02);
+  /* base palette */
+  --background: oklch(0.06 0 0);                 /* near-black */
+  --foreground: oklch(0.92 0.18 145);            /* phosphor-green text */
+  --card: oklch(0.10 0 0);                       /* slightly lifted black */
+  --card-foreground: oklch(0.92 0.18 145);
+  --popover: oklch(0.10 0 0);
+  --popover-foreground: oklch(0.92 0.18 145);
+
+  --primary: oklch(0.86 0.27 145);               /* neon green for CTAs */
+  --primary-foreground: oklch(0.08 0 0);
+  --secondary: oklch(0.16 0 0);
+  --secondary-foreground: oklch(0.85 0.15 145);
+  --muted: oklch(0.14 0 0);
+  --muted-foreground: oklch(0.55 0.06 145);      /* dim green for hints */
+  --accent: oklch(0.16 0 0);
+  --accent-foreground: oklch(0.92 0.18 145);
+  --destructive: oklch(0.65 0.25 25);            /* terminal red */
+
+  --border: oklch(0.86 0.27 145 / 28%);          /* faint green hairline */
+  --input: oklch(0.86 0.27 145 / 12%);
+  --ring: oklch(0.86 0.27 145 / 60%);
+
+  --chart-1: oklch(0.86 0.27 145);
+  --chart-2: oklch(0.75 0.20 165);
+  --chart-3: oklch(0.85 0.20 195);
+  --chart-4: oklch(0.65 0.18 125);
+  --chart-5: oklch(0.55 0.16 145);
+
+  --radius: 0.125rem;                            /* sharp corners */
+
+  --sidebar: oklch(0.08 0 0);
+  --sidebar-foreground: oklch(0.92 0.18 145);
+  --sidebar-primary: oklch(0.86 0.27 145);
+  --sidebar-primary-foreground: oklch(0.08 0 0);
+  --sidebar-accent: oklch(0.14 0 0);
+  --sidebar-accent-foreground: oklch(0.92 0.18 145);
+  --sidebar-border: oklch(0.86 0.27 145 / 28%);
+  --sidebar-ring: oklch(0.86 0.27 145 / 60%);
 }
 
+/* Re-use the same palette in dark mode — there is no "light mode" for a
+   terminal. */
 .dark {
-  --background: oklch(0.145 0.008 326);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.212 0.019 322.12);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.212 0.019 322.12);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.443 0.11 240.79);
-  --primary-foreground: oklch(0.977 0.013 236.62);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.263 0.024 320.12);
-  --muted-foreground: oklch(0.711 0.019 323.02);
-  --accent: oklch(0.263 0.024 320.12);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.542 0.034 322.5);
-  --chart-1: oklch(0.828 0.111 230.318);
-  --chart-2: oklch(0.685 0.169 237.323);
-  --chart-3: oklch(0.588 0.158 241.966);
-  --chart-4: oklch(0.5 0.134 242.749);
-  --chart-5: oklch(0.443 0.11 240.79);
-  --sidebar: oklch(0.212 0.019 322.12);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.685 0.169 237.323);
-  --sidebar-primary-foreground: oklch(0.293 0.066 243.157);
-  --sidebar-accent: oklch(0.263 0.024 320.12);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.542 0.034 322.5);
+  --background: oklch(0.06 0 0);
+  --foreground: oklch(0.92 0.18 145);
+  --card: oklch(0.10 0 0);
+  --card-foreground: oklch(0.92 0.18 145);
+  --popover: oklch(0.10 0 0);
+  --popover-foreground: oklch(0.92 0.18 145);
+  --primary: oklch(0.86 0.27 145);
+  --primary-foreground: oklch(0.08 0 0);
+  --secondary: oklch(0.16 0 0);
+  --secondary-foreground: oklch(0.85 0.15 145);
+  --muted: oklch(0.14 0 0);
+  --muted-foreground: oklch(0.55 0.06 145);
+  --accent: oklch(0.16 0 0);
+  --accent-foreground: oklch(0.92 0.18 145);
+  --destructive: oklch(0.65 0.25 25);
+  --border: oklch(0.86 0.27 145 / 28%);
+  --input: oklch(0.86 0.27 145 / 12%);
+  --ring: oklch(0.86 0.27 145 / 60%);
+  --chart-1: oklch(0.86 0.27 145);
+  --chart-2: oklch(0.75 0.20 165);
+  --chart-3: oklch(0.85 0.20 195);
+  --chart-4: oklch(0.65 0.18 125);
+  --chart-5: oklch(0.55 0.16 145);
+  --sidebar: oklch(0.08 0 0);
+  --sidebar-foreground: oklch(0.92 0.18 145);
+  --sidebar-primary: oklch(0.86 0.27 145);
+  --sidebar-primary-foreground: oklch(0.08 0 0);
+  --sidebar-accent: oklch(0.14 0 0);
+  --sidebar-accent-foreground: oklch(0.92 0.18 145);
+  --sidebar-border: oklch(0.86 0.27 145 / 28%);
+  --sidebar-ring: oklch(0.86 0.27 145 / 60%);
 }
 
 @theme inline {
-  --font-sans: "Inter Variable", sans-serif;
-  --font-heading: "Geist Variable", sans-serif;
+  --font-sans: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-heading: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -118,14 +133,54 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
+html, body {
+  font-family: var(--font-mono);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Tiny scanline tint to lean into the terminal feel without being noisy. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(0, 255, 136, 0.02) 3px,
+    rgba(0, 255, 136, 0.02) 4px
+  );
+}
+
+/* CRT-ish soft glow on primary buttons. */
+button[data-slot="button"]:not([disabled]).bg-primary,
+.bg-primary {
+  box-shadow:
+    0 0 0 1px oklch(0.86 0.27 145 / 70%),
+    0 0 14px oklch(0.86 0.27 145 / 35%);
+}
+
+/* Prefix every card title with a blinking cursor block. */
+[data-slot="card-title"]::before {
+  content: "▌ ";
+  color: oklch(0.86 0.27 145);
+}
+
+/* A subtle command-prompt header at the very top of the embed. */
+.terminal-prompt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: oklch(0.55 0.06 145);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-bottom: 1px solid oklch(0.86 0.27 145 / 28%);
+  background: oklch(0.04 0 0);
+}
+.terminal-prompt::before {
+  content: "$ ";
+  color: oklch(0.86 0.27 145);
 }

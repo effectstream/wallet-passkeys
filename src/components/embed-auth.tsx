@@ -237,55 +237,64 @@ export function EmbedAuth() {
 
   if (done) {
     return (
-      <div ref={containerRef} className="p-4 space-y-2">
-        <p className="text-sm font-medium">Authenticated</p>
-        <p className="text-xs text-muted-foreground">
-          Access key active. Listening for sign requests.
-        </p>
+      <div ref={containerRef}>
+        <div className="terminal-prompt">wallet-passkeys connect --status</div>
+        <div className="p-4 space-y-2">
+          <p className="text-sm font-medium">
+            <span style={{ color: "oklch(0.86 0.27 145)" }}>[OK]</span> Authenticated
+          </p>
+          <p className="text-xs text-muted-foreground">
+            access-key active · listening for sign requests
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div ref={containerRef} className="p-4 space-y-3">
-      {obscured && (
-        <p className="text-xs text-destructive font-medium">
-          This iframe appears to be obscured. For security, authentication will
-          open in a new window.
+    <div ref={containerRef}>
+      <div className="terminal-prompt">wallet-passkeys connect</div>
+      <div className="p-4 space-y-3">
+        {obscured && (
+          <p className="text-xs text-destructive font-medium">
+            [WARN] iframe obscured · auth will open in a new window
+          </p>
+        )}
+        <div className="space-y-1">
+          <label
+            htmlFor="embed-username"
+            className="text-xs text-muted-foreground uppercase tracking-wider"
+          >
+            username
+          </label>
+          <input
+            id="embed-username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="flex h-8 w-full rounded-none border border-border bg-background px-3 py-1 text-sm font-mono"
+          />
+        </div>
+        {error && <p className="text-xs text-destructive">[ERR] {error}</p>}
+        <div className="flex gap-2">
+          <Button
+            onClick={() => handleRegister()}
+            disabled={loading || !username}
+          >
+            {loading ? "Waiting…" : "Register"}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleSignIn()}
+            disabled={loading}
+          >
+            {loading ? "Waiting…" : "Sign In"}
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground uppercase tracking-[0.18em]">
+          wallet-passkeys.ac-edward.workers.dev
         </p>
-      )}
-      <div className="space-y-1">
-        <label
-          htmlFor="embed-username"
-          className="text-xs text-muted-foreground"
-        >
-          Username
-        </label>
-        <input
-          id="embed-username"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="flex h-8 w-full rounded-md border border-border bg-background px-3 py-1 text-sm"
-        />
       </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
-      <div className="flex gap-2">
-        <Button
-          onClick={() => handleRegister()}
-          disabled={loading || !username}
-        >
-          {loading ? "Waiting..." : "Register"}
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => handleSignIn()}
-          disabled={loading}
-        >
-          {loading ? "Waiting..." : "Sign In"}
-        </Button>
-      </div>
-      <p className="text-xs text-muted-foreground">passkeys.rvcas.dev</p>
     </div>
   );
 }
