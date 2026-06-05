@@ -62,15 +62,29 @@ async function signMessage(
   return { raw, der };
 }
 
+function truncateDid(did: string): string {
+  // did:key:zABC…XYZ — show a wallet-style truncated identity
+  const z = did.replace("did:key:", "");
+  if (z.length <= 18) return did;
+  return `did:key:${z.slice(0, 10)}…${z.slice(-8)}`;
+}
+
 export function EmbedAuth() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [username, setUsername] = useState("midnight-user");
+  const [identityDid, setIdentityDid] = useState<string | null>(null);
   const { containerRef, visible, supported } = useVisibilityCheck();
   const accessKeyRef = useRef<AccessKey | null>(null);
 
   const obscured = supported && !visible;
+
+  // Full-height popup layout for the /embed route.
+  useEffect(() => {
+    document.documentElement.classList.add("embed");
+    return () => document.documentElement.classList.remove("embed");
+  }, []);
 
   // Listen for commands from the parent
   useEffect(() => {
@@ -89,6 +103,11 @@ export function EmbedAuth() {
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   });
+
+  function handleClose() {
+    // Ask the parent dApp to dismiss the floating popup.
+    postToParent("close", {});
+  }
 
   async function handleSign(message: string, requestId?: string) {
     const key = accessKeyRef.current;
@@ -148,6 +167,7 @@ export function EmbedAuth() {
           accessKeyPublicKey: accessKey.publicKeyHex,
           keyAuthorization: authorization,
         });
+        setIdentityDid(did);
         setDone(true);
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Registration failed";
@@ -194,6 +214,7 @@ export function EmbedAuth() {
           accessKeyPublicKey: accessKey.publicKeyHex,
           keyAuthorization: authorization,
         });
+        setIdentityDid(did);
         setDone(true);
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Sign in failed";
@@ -210,31 +231,73 @@ export function EmbedAuth() {
     postToParent("ready", {});
   }, []);
 
+  // ── Header (shared) ───────────────────────────────────────────────────
+  const header = (
+    <header className="wallet-header">
+      <div className="mark">ES</div>
+      <div>
+        <div className="title">EffectStream Passkeys</div>
+        <div className="subtitle">wallet · auth provider</div>
+      </div>
+      <span className={`wallet-status${done ? " live" : ""}`}>
+        {done ? "connected" : "locked"}
+      </span>
+    </header>
+  );
+
+  // ── Connected (done) state ──────────────────────────────────────────────
   if (done) {
     return (
-      <div ref={containerRef}>
-        <div className="terminal-prompt">wallet-passkeys connect --status</div>
-        <div className="p-4 space-y-2">
-          <p className="text-sm font-medium">
-            <span style={{ color: "oklch(0.86 0.27 145)" }}>[OK]</span> Authenticated
-          </p>
-          <p className="text-xs text-muted-foreground">
-            access-key active · listening for sign requests
+      <div ref={containerRef} className="wallet-shell">
+        {header}
+        <div className="wallet-body">
+          <div className="wallet-approve">
+            <div className="req-title">
+              <span style={{ color: "oklch(0.86 0.27 145)" }}>✓</span> Wallet connected
+            </div>
+            <div className="req-detail">
+              Access key is active. The dApp can now request signatures without a
+              new biometric prompt.
+            </div>
+          </div>
+
+          {identityDid && (
+            <div className="wallet-account">
+              <div className="label">Identity (did:key)</div>
+              <div className="value">{truncateDid(identityDid)}</div>
+            </div>
+          )}
+
+          <p className="text-xs text-muted-foreground uppercase tracking-[0.18em]">
+            wallet-passkeys.ac-edward.workers.dev
           </p>
         </div>
+        <footer className="wallet-footer">
+          <Button onClick={handleClose}>OK</Button>
+        </footer>
       </div>
     );
   }
 
+  // ── Unauthenticated state ─────────────────────────────────────────────
   return (
-    <div ref={containerRef}>
-      <div className="terminal-prompt">wallet-passkeys connect</div>
-      <div className="p-4 space-y-3">
+    <div ref={containerRef} className="wallet-shell">
+      {header}
+      <div className="wallet-body">
+        <div className="wallet-approve">
+          <div className="req-title">Connection request</div>
+          <div className="req-detail">
+            A dApp wants you to connect a passkey-backed wallet. Register a new
+            passkey or sign in with an existing one. No seed phrase, no extension.
+          </div>
+        </div>
+
         {obscured && (
           <p className="text-xs text-destructive font-medium">
             [WARN] iframe obscured · auth will open in a new window
           </p>
         )}
+
         <div className="space-y-1">
           <label
             htmlFor="embed-username"
@@ -247,29 +310,28 @@ export function EmbedAuth() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="flex h-8 w-full rounded-none border border-border bg-background px-3 py-1 text-sm font-mono"
+            className="flex h-9 w-full rounded-none border border-border bg-background px-3 py-1 text-sm font-mono"
           />
         </div>
+
         {error && <p className="text-xs text-destructive">[ERR] {error}</p>}
-        <div className="flex gap-2">
-          <Button
-            onClick={() => handleRegister()}
-            disabled={loading || !username}
-          >
-            {loading ? "Waiting…" : "Register"}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => handleSignIn()}
-            disabled={loading}
-          >
-            {loading ? "Waiting…" : "Sign In"}
-          </Button>
-        </div>
-        <p className="text-xs text-muted-foreground uppercase tracking-[0.18em]">
-          wallet-passkeys.ac-edward.workers.dev
-        </p>
       </div>
+
+      <footer className="wallet-footer">
+        <Button variant="outline" onClick={handleClose} disabled={loading}>
+          Cancel
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => handleSignIn()}
+          disabled={loading}
+        >
+          {loading ? "Waiting…" : "Sign In"}
+        </Button>
+        <Button onClick={() => handleRegister()} disabled={loading || !username}>
+          {loading ? "Waiting…" : "Register"}
+        </Button>
+      </footer>
     </div>
   );
 }
