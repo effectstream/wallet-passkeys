@@ -14,7 +14,13 @@ export function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b bg-background/80 px-4 py-2 backdrop-blur">
-      <span className="font-heading text-sm font-medium">Passkeys</span>
+      <span className="font-heading text-sm font-medium tracking-wider">
+        <span style={{ color: "oklch(0.86 0.27 145)" }}>wallet</span>
+        <span style={{ color: "oklch(0.55 0.06 145)" }}>-passkeys</span>
+        <span className="ml-2 text-xs uppercase tracking-[0.18em]" style={{ color: "oklch(0.55 0.06 145)" }}>
+          · auth provider
+        </span>
+      </span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon-sm">

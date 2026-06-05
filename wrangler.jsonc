@@ -1,14 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "passkeys",
+  "name": "wallet-passkeys",
   "main": "./worker/index.ts",
-  "account_id": "864bff2c217f01d65488f7f5d61c5e55",
-  "routes": [
-    {
-      "pattern": "passkeys.rvcas.dev",
-      "custom_domain": true,
-    },
-  ],
+  "account_id": "28ea08e36bc67a4f136df373255ce175",
   "compatibility_date": "2025-09-27",
   "observability": {
     "enabled": true,
@@ -23,11 +17,11 @@
   "kv_namespaces": [
     {
       "binding": "CHALLENGES",
-      "id": "2a9f96d3cdf145ce89f6825665773780",
+      "id": "11f31ec5555e4f58afc922748bff0438",
     },
     {
       "binding": "CREDENTIALS",
-      "id": "e4e1f6d964a74f6db2dee1017310f380",
+      "id": "ecc0c8045cbe47c5bf542521ec5940d7",
     },
   ],
 }

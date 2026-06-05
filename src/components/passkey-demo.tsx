@@ -82,7 +82,7 @@ export function PasskeyDemo() {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="font-heading text-xl font-semibold">
-              midnightOS Passkey Demo
+              EffectStream Passkey Demo
             </h1>
             <p className="text-sm text-muted-foreground">
               Authenticated as {credential.credentialId.slice(0, 16)}...
@@ -102,7 +102,7 @@ export function PasskeyDemo() {
     <div className="mx-auto max-w-lg space-y-4 p-4">
       <div className="space-y-1">
         <h1 className="font-heading text-xl font-semibold">
-          midnightOS Passkey Demo
+          EffectStream Passkey Demo
         </h1>
         <p className="text-sm text-muted-foreground">
           Proof of concept: passkey root key → access key → DID credential
