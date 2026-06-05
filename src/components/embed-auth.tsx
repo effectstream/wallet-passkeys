@@ -10,41 +10,16 @@ function postToParent(type: string, payload: unknown) {
   }
 }
 
+// NOTE: The previous version of this hook used IntersectionObserver with
+// {trackVisibility: true} as a clickjacking check. In practice that API is an
+// experimental Chrome-only feature with frequent false positives — any iframe
+// with a non-trivial border / box-shadow / transform on its container can be
+// reported as "obscured" even when it's fully visible. We disable the check
+// here and instead rely on CSP `frame-ancestors *` plus per-message origin
+// pinning on the postMessage side for security.
 function useVisibilityCheck() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(true);
-  const [supported, setSupported] = useState(false);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    try {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if ("isVisible" in entry) {
-              setSupported(true);
-              setVisible(entry.isVisible as boolean);
-            }
-          }
-        },
-        {
-          threshold: [1.0],
-          trackVisibility: true,
-          delay: 100,
-        } as IntersectionObserverInit,
-      );
-
-      observer.observe(el);
-      return () => observer.disconnect();
-    } catch {
-      setSupported(false);
-      setVisible(true);
-    }
-  }, []);
-
-  return { containerRef, visible, supported };
+  return { containerRef, visible: true, supported: false };
 }
 
 function rawToDer(raw: Uint8Array): string {
