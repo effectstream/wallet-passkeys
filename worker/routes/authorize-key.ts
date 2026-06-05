@@ -4,7 +4,7 @@ function getRpConfig(request: Request) {
   const url = new URL(request.url);
   return {
     id: url.hostname,
-    name: "midnightOS Passkeys",
+    name: "EffectStream Passkeys",
   };
 }
 
